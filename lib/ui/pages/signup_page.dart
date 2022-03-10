@@ -6,11 +6,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  User user;
+  File filePicture;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController fullnameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController fullnameController = TextEditingController();
     return GeneralPage(
         onBackButton: () {
           Get.back();
@@ -19,22 +21,41 @@ class _SignUpPageState extends State<SignUpPage> {
         subTitle: "Register and eat",
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(defaultMargin, 26, defaultMargin, 0),
-              padding: EdgeInsets.all(10),
-              width: 110,
-              height: 110,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage("assets/ellipse_6.png"))),
+            GestureDetector(
+              onTap: () async {
+                PickedFile pickedFile =
+                    await ImagePicker().getImage(source: ImageSource.gallery);
+
+                if (pickedFile != null) {
+                  filePicture = File(pickedFile.path);
+                  setState(() {});
+                }
+              },
               child: Container(
+                margin:
+                    EdgeInsets.fromLTRB(defaultMargin, 26, defaultMargin, 0),
+                padding: EdgeInsets.all(10),
+                width: 110,
+                height: 110,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: NetworkImage(
-                            "https://img.inews.co.id/files/inews_new/2021/11/23/laudya_cyntia_bella.jpg"),
-                        fit: BoxFit.cover)),
+                        fit: BoxFit.cover,
+                        image: AssetImage("assets/ellipse_6.png"))),
+                child: (filePicture != null)
+                    ? Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: FileImage(filePicture),
+                                fit: BoxFit.cover)),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AssetImage("assets/photo.png"),
+                                fit: BoxFit.cover)),
+                      ),
               ),
             ),
             Container(
@@ -102,7 +123,8 @@ class _SignUpPageState extends State<SignUpPage> {
               height: 45,
               child: RaisedButton(
                 onPressed: () {
-                  Get.to(AddresPage());
+                  // Get.to(AddresPage());
+                  UserServices.signUp(User(), "Bondan");
                 },
                 color: mainColor,
                 shape: RoundedRectangleBorder(
