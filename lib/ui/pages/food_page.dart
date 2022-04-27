@@ -67,7 +67,7 @@ class _FoodPageState extends State<FoodPage> {
                               children: foodState.food
                                   .map((e) => Padding(
                                       padding: EdgeInsets.only(
-                                          left: (e == mockFood.first)
+                                          left: (e == foodState.food.first)
                                               ? defaultMargin
                                               : 0,
                                           right: defaultMargin),

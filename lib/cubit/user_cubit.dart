@@ -14,6 +14,7 @@ class UserCubit extends Cubit<UserState> {
     var result = await UserServices.signIn(email, password);
     if (result.value != null) {
       emit(UserLoaded(result.value));
+      print(result.value);
     } else {
       emit(UserLoadFailed(result.message));
     }
@@ -22,6 +23,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> signUp(User user, String password, {File picturePath}) async {
     ApiresultValue<User> result =
         await UserServices.signUp(user, password, picturePath: picturePath);
+    print(result);
     if (result.value != null) {
       emit(UserLoaded(result.value));
     } else {

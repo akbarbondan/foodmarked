@@ -123,8 +123,12 @@ class _SignUpPageState extends State<SignUpPage> {
               height: 45,
               child: RaisedButton(
                 onPressed: () {
-                  // Get.to(AddresPage());
-                  UserServices.signUp(User(), "Bondan");
+                  Get.to(AddresPage(
+                      User(
+                          email: emailController.text,
+                          name: fullnameController.text),
+                      passwordController.text,
+                      filePicture));
                 },
                 color: mainColor,
                 shape: RoundedRectangleBorder(

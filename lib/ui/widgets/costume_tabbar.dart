@@ -17,6 +17,7 @@ class CustomeTabbar extends StatelessWidget {
             height: 1,
             color: 'F2F2F2'.toColor(),
           ),
+
           Row(
             children: titles
                 .map((e) => Padding(

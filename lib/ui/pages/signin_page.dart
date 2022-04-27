@@ -3,12 +3,23 @@ part of 'pages.dart';
 class SigninPage extends StatefulWidget {
   @override
   State<SigninPage> createState() => _SigninPageState();
+
+  SigninPage() {
+    print("Halo 1");
+  }
 }
 
 class _SigninPageState extends State<SigninPage> {
+  @override
+  void initState() {
+    super.initState();
+    print("Hallo");
+  }
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return GeneralPage(
@@ -80,9 +91,9 @@ class _SigninPageState extends State<SigninPage> {
                               emailController.text, passwordController.text);
 
                           /// Mengambil UserState
-                          UserState userState = context.bloc<UserCubit>().state;
+                          UserState state = context.bloc<UserCubit>().state;
 
-                          if (userState is UserLoaded) {
+                          if (state is UserLoaded) {
                             // ambil data food
                             context.bloc<FoodCubit>().getFood();
                             context.bloc<TransactionCubit>().getTransaction();
@@ -102,11 +113,13 @@ class _SigninPageState extends State<SigninPage> {
                                   color: Colors.white,
                                 ),
                                 messageText: Text(
-                                    (context.bloc<UserCubit>().state
-                                            as UserLoadFailed)
-                                        .message,
+                                    (state as UserLoadFailed).message,
                                     style: GoogleFonts.poppins(
                                         color: Colors.white)));
+
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
                         },
                         elevation: 0,

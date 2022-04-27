@@ -1,10 +1,27 @@
 part of 'services.dart';
 
 class UserServices {
-  static Future<ApiresultValue<User>> signIn(
-      String email, String password) async {
-    await Future.delayed(Duration(milliseconds: 3));
-    return ApiresultValue(value: mockUser);
+  static Future<ApiresultValue<User>> signIn(String email, String password,
+      {https.Client client}) async {
+    if (client == null) {
+      client = https.Client();
+    }
+
+    String url = baseUrl + 'login';
+    var respond = await client.post(url,
+        headers: {"Content-Type": "application/json"},
+        body:
+            jsonEncode(<String, String>{'email': email, 'password': password}));
+
+    if (respond.statusCode != 200) {
+      return ApiresultValue(message: "Please try again");
+    }
+
+    var data = jsonDecode(respond.body);
+    User.token = data['data']['token'];
+    User value = User.fromJson(data['data']['user']);
+
+    return ApiresultValue(value: value);
   }
 
   static Future<ApiresultValue<User>> signUp(User user, String password,
@@ -17,14 +34,14 @@ class UserServices {
     var respondApi = await client.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(<String, String>{
-          "name": user.name,
-          "email": user.email,
-          "password": password,
-          "password_confirmation": password,
-          "address": user.address,
-          "city": user.city,
-          "houseNumber": user.houseNumber,
-          "phoneNumber": user.phoneNumber
+          'name': user.name,
+          'email': user.email,
+          'password': password,
+          'password_confirmation': password,
+          'address': user.address,
+          'city': user.city,
+          'houseNumber': user.houseNumber,
+          'phoneNumber': user.phoneNumber
         }));
 
     if (respondApi.statusCode != 200) {
@@ -32,15 +49,17 @@ class UserServices {
     }
     var data = jsonDecode(respondApi.body);
     User.token = data['data']['access_token'];
-    User value = data['data']['user'];
+    User value = User.fromJson(data['data']['user']);
 
     if (picturePath != null) {
       ApiresultValue<String> result = await uploadPicture(picturePath);
       if (result.value != null) {
         value = value.copyWith(
             picturePath:
-                'http://foodmarket-backend.buildwithangga.id/api/storage/' +
+                "http://foodmarket-backend.buildwithangga.id/api/storage/" +
                     result.value);
+
+        print(result.value);
       }
     }
 
@@ -49,7 +68,7 @@ class UserServices {
 
   static Future<ApiresultValue<String>> uploadPicture(File filePicture,
       {https.MultipartRequest request}) async {
-    String url = baseUrl + "user/photo";
+    String url = baseUrl + 'user/photo';
     var uri = Uri.parse(url);
 
     if (request == null) {
