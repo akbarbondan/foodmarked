@@ -15,10 +15,12 @@ class TransactionServices {
     if (respond.statusCode != 200) {
       return ApiresultValue(message: "Please try again");
     }
+
     var data = jsonDecode(respond.body);
     List<Transaction> transactions = (data['data']['data'] as Iterable)
         .map((e) => Transaction.fromJson(e))
         .toList();
+    print(data["meta"]["message"]);
     return ApiresultValue(value: transactions);
   }
 

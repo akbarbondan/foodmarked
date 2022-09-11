@@ -393,7 +393,6 @@ class _PaymentPageState extends State<PaymentPage> {
 
                       if (result == true) {
                         Get.to(SuccessOrderPage());
-                        
                       } else {
                         setState(() {
                           isloaded == false;
